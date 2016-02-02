@@ -37,24 +37,50 @@ class Config(object):
         self.scheme = scheme or Config.DEF_SCHEME
         self.server = server or Config.DEF_SERVER
         self.root = root or Config.DEF_ROOT
-        self.baseurl = urlunparse(
-            (self.scheme, self.server, self.root, None, None, None)
-        )
 
-    def relative_get(self, path):
-        """Create an absolute URL based on path, relative to the API root."""
-        url = urljoin(self.baseurl, path)
-        _log().info("Perfoming GET %s", url)
-        resp = requests.get(url)
+    def _get_url(self, path, scheme=None, server=None, root=None):
+        baseurl = urlunparse((
+            scheme or self.scheme,
+            server or self.server,
+            root or self.root,
+            None,
+            None,
+            None
+        ))
+        return urljoin(baseurl, path)
+
+    def _log_response(self, resp):
         _log().info("[%d]: Got %d bytes in encoding %s (apparent %s)",
             resp.status_code,
             len(resp.content),
             resp.encoding,
             resp.apparent_encoding
         )
+
+    def relative_get(self, path, root_override=None):
+        """Perform HTTP GET at endpoint path relative to the API root."""
+        url = self._get_url(path, root=root_override)
+        _log().info("Perfoming GET %s", url)
+
+        resp = requests.get(url)
+        self._log_response(resp)
+
         if resp.status_code != 200:
             resp = None
         return resp
+
+    def relative_post(self, path, root_override=None):
+        """Perform HTTP POST at endpoint path relative to the API root."""
+        url = self._get_url(path, root=root_override)
+        _log().info("Perfoming POST %s", url)
+
+        resp = requests.post(url)
+        self._log_response(resp)
+
+        if resp.status_code != 200:
+            resp = None
+        return resp
+
 
 Config.DEFAULT_CONFIG = Config()
 
@@ -95,3 +121,7 @@ class Authors(object):
             return []
         authors = xmlparse(raw)
         return [self._author_parse(author) for author in authors]
+
+    def get_articles_by_id(self, id):
+        """Return all articles published by the given author id."""
+        return None
