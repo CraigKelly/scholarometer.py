@@ -1,4 +1,4 @@
-# Speculative Python API for REST API to scholarometer
+# Speculative Python API for Scholarometer ReSTiful API
 
 ***IMPORTANT:*** This is just a POC - you should be able to make sure that the
 requirements are available and just go.
@@ -9,6 +9,8 @@ The one exception is `Authors.get_articles_by_id` - that is a call to the ReST e
 used by the scholarometer web application itself.
 
 ## Development and Details
+
+This project uses the MIT License. See LICENSE.txt for details.
 
 After cloning, set up the dev environment with `setup.sh` and then use the
 created virtualenv to run tests with `run_tests.py`.
@@ -26,6 +28,7 @@ calling mocks. See the Config class for a good candidate for testing mocking.
 
 ## Quick file run-down (in alphabetical order)
 
+* LICENSE.txt - the license for this project (MIT)
 * README.md - this file
 * requirements.txt - requirements list for this project
 * run_tests.sh - run the unit tests in test.py using the virtualenv created by setup.py
