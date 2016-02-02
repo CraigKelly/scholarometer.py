@@ -9,14 +9,15 @@ from scholarometer import Authors
 
 
 class AuthorTesting(unittest.TestCase):
+    GRAESSER_ID = '1320f77a0cfb40fba374a9fef8d6d72d'
+
     def setUp(self):
         self.authors = Authors()
 
     def test_get_by_id(self):
         self.assertIsNone(self.authors.get_by_id("zzzzzzzzzzzzzzzzzzzzzzzzzz"))
 
-        # the ID is Art Graesser
-        resp = self.authors.get_by_id("1320f77a0cfb40fba374a9fef8d6d72d")
+        resp = self.authors.get_by_id(AuthorTesting.GRAESSER_ID)
         self.assertIsNotNone(resp)
         print(resp)
 
@@ -28,3 +29,12 @@ class AuthorTesting(unittest.TestCase):
         self.assertTrue(len(resp) > 0)
 
         print(resp)
+
+    def test_get_articles_by_id(self):
+        resp = self.authors.get_articles_by_id("zzzzzzzzzzzzzzzzzzzzzzzzzz")
+        self.assertEquals(0, len(resp))
+
+        resp = self.authors.get_articles_by_id(AuthorTesting.GRAESSER_ID)
+        self.assertTrue(len(resp) > 0)
+
+        print("First item only: " + repr(resp[0]))

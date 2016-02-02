@@ -50,31 +50,33 @@ class Config(object):
         return urljoin(baseurl, path)
 
     def _log_response(self, resp):
-        _log().info("[%d]: Got %d bytes in encoding %s (apparent %s)",
+        _log().info(
+            "[%d]: Got %d bytes [First 8: '%s'] encoding:%s (app:%s)",
             resp.status_code,
             len(resp.content),
+            resp.content[:8] if resp.content else '',
             resp.encoding,
             resp.apparent_encoding
         )
 
-    def relative_get(self, path, root_override=None):
+    def relative_get(self, path, api_root=None, params=None, headers=None):
         """Perform HTTP GET at endpoint path relative to the API root."""
-        url = self._get_url(path, root=root_override)
+        url = self._get_url(path, root=api_root)
         _log().info("Perfoming GET %s", url)
 
-        resp = requests.get(url)
+        resp = requests.get(url, params=params, headers=headers)
         self._log_response(resp)
 
         if resp.status_code != 200:
             resp = None
         return resp
 
-    def relative_post(self, path, root_override=None):
+    def relative_post(self, path, api_root=None, params=None, data=None, headers=None):  # NOQA
         """Perform HTTP POST at endpoint path relative to the API root."""
-        url = self._get_url(path, root=root_override)
+        url = self._get_url(path, root=api_root)
         _log().info("Perfoming POST %s", url)
 
-        resp = requests.post(url)
+        resp = requests.post(url, params=params, data=data, headers=headers)
         self._log_response(resp)
 
         if resp.status_code != 200:
@@ -124,4 +126,20 @@ class Authors(object):
 
     def get_articles_by_id(self, id):
         """Return all articles published by the given author id."""
-        return None
+        resp = self.config.relative_post(
+            'indexu.cgi',
+            api_root='/cgi-bin/',
+            headers={'Content-Type': 'text/plain;charset=UTF-8'},
+            data='',
+            params={
+                'func': 'arrecords',
+                'expr': id,
+                'ver': '4.1.0'
+            }
+        )
+
+        if len(resp.text) < 2:
+            # Can't possibly be valid json
+            return []
+
+        return resp.json()
