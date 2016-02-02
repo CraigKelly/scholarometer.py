@@ -6,6 +6,8 @@ made to support Python 2
 
 # pylama:ignore=E128
 
+# TODO: rest of API
+
 import logging
 from urllib.parse import urlunparse, urljoin, quote
 
@@ -64,15 +66,32 @@ class Authors(object):
         """Init the authors API with given config."""
         self.config = config or Config.DEFAULT_CONFIG
 
+    def _author_parse(self, author):
+        if not author:
+            return None
+        else:
+            stats = author.find('statistics')
+            return {
+                'id': author.attrib['id'],
+                'lastupdate': author.attrib['lastupdate'],
+                'names': [n.text for n in author.find('names')],
+                'article_count': int(stats.find('narticles').text),
+                'citation_count': int(stats.find('ncitations').text),
+            }
+
     def get_by_id(self, id):
-        """Query author by scholarpedia ID."""
+        """Query author by scholarpedia ID: return a single author or None."""
         resp = self.config.relative_get('authors/id/' + quote(id))
         raw = resp.text if resp and resp.text else None
         if not raw:
             return None
-        author = xmlparse(raw)
-        return {
-            'id': author.attrib['id'],
-            'lastupdate': author.attrib['lastupdate'],
-            'names': [n.text for n in author.find('names')]
-        }
+        return self._author_parse(xmlparse(raw))
+
+    def get_by_name(self, name):
+        """Query author by name: returns a list of authors."""
+        resp = self.config.relative_get('authors/name/' + quote(name))
+        raw = resp.text if resp and resp.text else None
+        if not raw:
+            return []
+        authors = xmlparse(raw)
+        return [self._author_parse(author) for author in authors]

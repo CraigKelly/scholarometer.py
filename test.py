@@ -19,3 +19,12 @@ class AuthorTesting(unittest.TestCase):
         resp = self.authors.get_by_id("1320f77a0cfb40fba374a9fef8d6d72d")
         self.assertIsNotNone(resp)
         print(resp)
+
+    def test_get_by_name(self):
+        resp = self.authors.get_by_name("yyyyyyyyyy")
+        self.assertEquals(0, len(resp))
+
+        resp = self.authors.get_by_name("graesser")
+        self.assertTrue(len(resp) > 0)
+
+        print(resp)
