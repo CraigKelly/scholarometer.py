@@ -4,14 +4,25 @@
 requirements are available and just go.
 
 This is a simple wrapper around a small fraction the Scholarometer API
-(documented at http://scholarometer.indiana.edu/data.html). It uses defusedxml
-for secure XML parsing, requests for HTTP, and supplies unit tests (that
-call the live API - yes, that needs to change).
+documented at http://scholarometer.indiana.edu/data.html.
+The one exception is `Authors.get_articles_by_id` - that is a call to the ReST endpoint
+used by the scholarometer web application itself.
 
-## Development
+## Development and Details
 
 After cloning, set up the dev environment with `setup.sh` and then use the
 created virtualenv to run tests with `run_tests.py`.
+
+We use defusedxml for secure XML parsing and requests for HTTP. As mentioned
+above, the script `setup.sh` will install these for you into a virtualenv. See
+requirements.txt if you want to manually install them into a virtualenv of
+your choosing. Yes, we should have a pypi-compatible setup.py one day.
+
+The file `test.py` contatins all unit tests. Run them via `run_tests.py`. Note
+that this means that you should have already run `setup.sh`
+
+The unit tests call the live scholarometer API. Yes, this needs to change to
+calling mocks. See the Config class for a good candidate for testing mocking.
 
 ## Quick file run-down (in alphabetical order)
 
