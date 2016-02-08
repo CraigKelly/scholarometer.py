@@ -4,7 +4,7 @@ Note that this module is designed and tested in Python3. No effort is currently
 made to support Python 2
 """
 
-# pylama:ignore=E128
+# pylama:ignore=E128,E501
 
 # TODO: rest of API
 
@@ -37,6 +37,7 @@ class Config(object):
         self.scheme = scheme or Config.DEF_SCHEME
         self.server = server or Config.DEF_SERVER
         self.root = root or Config.DEF_ROOT
+        self.session = requests.Session()
 
     def _get_url(self, path, scheme=None, server=None, root=None):
         baseurl = urlunparse((
@@ -64,19 +65,19 @@ class Config(object):
         url = self._get_url(path, root=api_root)
         _log().info("Perfoming GET %s", url)
 
-        resp = requests.get(url, params=params, headers=headers)
+        resp = self.session.get(url, params=params, headers=headers)
         self._log_response(resp)
 
         if resp.status_code != 200:
             resp = None
         return resp
 
-    def relative_post(self, path, api_root=None, params=None, data=None, headers=None):  # NOQA
+    def relative_post(self, path, api_root=None, params=None, data=None, headers=None):
         """Perform HTTP POST at endpoint path relative to the API root."""
         url = self._get_url(path, root=api_root)
         _log().info("Perfoming POST %s", url)
 
-        resp = requests.post(url, params=params, data=data, headers=headers)
+        resp = self.session.post(url, params=params, data=data, headers=headers)
         self._log_response(resp)
 
         if resp.status_code != 200:
