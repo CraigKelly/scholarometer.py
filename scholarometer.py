@@ -14,8 +14,6 @@ from urllib.parse import urlunparse, urljoin, quote
 import requests  # External dep
 from defusedxml.ElementTree import fromstring as xmlparse
 
-# TODO: It would be nice to have an API mock for unit testing
-
 
 def _log():
     return logging.getLogger('scholarometer')
