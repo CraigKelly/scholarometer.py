@@ -34,7 +34,7 @@ class AuthorTesting(unittest.TestCase):
         # Use betamax to cache responses from scholarometer
         self.recorder = betamax.Betamax(
             self.authors.config.session,
-            cassette_library_dir=AuthorTesting.CASSETTE_LIBRARY_DIR
+            cassette_library_dir=self.CASSETTE_LIBRARY_DIR
         )
         self.recorder.use_cassette('Authors', record='new_episodes')
         self.recorder.start()
@@ -45,7 +45,7 @@ class AuthorTesting(unittest.TestCase):
     def test_get_by_id(self):
         self.assertIsNone(self.authors.get_by_id("zzzzzzzzzzzzzzzzzzzzzzzzzz"))
 
-        resp = self.authors.get_by_id(AuthorTesting.GRAESSER_ID)
+        resp = self.authors.get_by_id(self.GRAESSER_ID)
         self.assertIsNotNone(resp)
         print(resp)
 
@@ -62,7 +62,7 @@ class AuthorTesting(unittest.TestCase):
         resp = self.authors.get_articles_by_id("zzzzzzzzzzzzzzzzzzzzzzzzzz")
         self.assertEquals(0, len(resp))
 
-        resp = self.authors.get_articles_by_id(AuthorTesting.GRAESSER_ID)
+        resp = self.authors.get_articles_by_id(self.GRAESSER_ID)
         self.assertTrue(len(resp) > 0)
 
         print("First item only: " + repr(resp[0]))
