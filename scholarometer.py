@@ -20,7 +20,7 @@ def _log():
 
 
 class Config(object):
-    """An instance of this class is an imuutable configuration for API call.
+    """An instance of this class is an immutable configuration for API call.
 
     Currently only our default instance makes sense, so you can just ignore
     this class.
