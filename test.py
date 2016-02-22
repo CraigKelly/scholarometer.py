@@ -36,7 +36,7 @@ class AuthorTesting(unittest.TestCase):
             self.authors.config.session,
             cassette_library_dir=self.CASSETTE_LIBRARY_DIR
         )
-        self.recorder.use_cassette('Authors', record='new_episodes')
+        self.recorder.use_cassette('Authors', record='once')
         self.recorder.start()
 
     def tearDown(self):
