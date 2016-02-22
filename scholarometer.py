@@ -138,7 +138,6 @@ class Authors(object):
         )
 
         if len(resp.text) < 2:
-            # Can't possibly be valid json
-            return []
+            return []  # Can't possibly be valid json
 
         return resp.json()
