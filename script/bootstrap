@@ -1,6 +1,9 @@
 #!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# We're in the script directory, so back up one
+SCRIPT_DIR=$SCRIPT_DIR/..
 cd $SCRIPT_DIR
 
 if [ -d venv ];
